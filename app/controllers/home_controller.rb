@@ -1,3 +1,5 @@
+require 'people_search'
+
 class HomeController < ActionController::Base
   protect_from_forgery
   layout "application"
@@ -22,13 +24,18 @@ class HomeController < ActionController::Base
 		  
 		@api = Koala::Facebook::API.new(session[:access_token])
 		begin
-			@graph_data = @api.get_object("/me/statuses", "fields"=>"message")
-			@graph_data2 = @api.get_object("/me/friends", "fields"=>"name,location,first_name,last_name,picture")
-			user = @api.get_object("me")
-			@graph_friends = @api.get_connections(user["id"], "friends")
+			@graph_data2 = @api.get_object("/me/friends", "fields"=>"name,location,first_name,last_name,picture,birthday")
+			
+			@graph_data2.each do |friend|
+			place = friend["location"] && friend["location"]["name"].to_s.delete('^A-Za-z0-9_,')
+  		fname = friend["first_name"] && friend["first_name"].to_s.delete('^A-Za-z0-9_')
+  		lname = friend["last_name"] && friend["last_name"].to_s.delete('^A-Za-z0-9_')
+      friend['wp'] = PeopleSearch.person_search(fname, lname, place.to_s)
+      end
+
+
 		rescue Exception=>ex
-			puts ex.message
-		end
+    end
 		
   
  		respond_to do |format|
