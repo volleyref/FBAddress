@@ -1,0 +1,18 @@
+<center><h1>Displaying all your connected friends:</h1></center><br><br>
+
+<ul>
+<% @graph_data2.each do |location| %>
+<li>
+<%= image_tag location["picture"]%>
+<%= location["name"] %><br>
+
+<%= location["location"]["name"] unless location["location"].nil? %><br>
+FirstName:
+<%= location["first_name"]%><br>
+LastName:
+<%= location["last_name"]%>
+	<hr>
+</li>
+<% end %>
+
+</ul>
