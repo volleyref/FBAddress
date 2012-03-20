@@ -6,7 +6,7 @@ class HomeController < ActionController::Base
   
    def index   
    	session[:oauth] = Koala::Facebook::OAuth.new(APP_ID, APP_SECRET, SITE_URL + '/home/callback')
-		@auth_url =  session[:oauth].url_for_oauth_code(:permissions=>"read_stream") 	
+		@auth_url =  session[:oauth].url_for_oauth_code(:permissions=>"read_stream,friends_birthday,friends_location") 	
 		puts session.to_s + "<<< session"
 
   	respond_to do |format|
@@ -32,7 +32,6 @@ class HomeController < ActionController::Base
   		lname = friend["last_name"] && friend["last_name"].to_s.delete('^A-Za-z0-9_')
       friend['wp'] = PeopleSearch.person_search(fname, lname, place.to_s)
       end
-
 
 		rescue Exception=>ex
     end
